@@ -17,10 +17,14 @@ use App\Http\Controllers\API\ProjectController;
 |
 */
 
+//Public routes
 Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
 
+
+
+//Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::resource('projects', ProjectController::class);
     Route::post('logout', [RegisterController::class, 'logout']);
+    Route::resource('projects', ProjectController::class);
 });

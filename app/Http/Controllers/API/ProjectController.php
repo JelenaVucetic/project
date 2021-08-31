@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Project;
-use Validator;
-use App\Http\Resources\Project as ProjectResource;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\ProjectResource;
 
 class ProjectController extends BaseController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function index()
     {
@@ -21,24 +25,16 @@ class ProjectController extends BaseController
 
         return $this->sendResponse(ProjectResource::collection($projects), 'Projects retrieved successfully.');
     }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreProjectRequest $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
         $input = $request->all();
-
-        $validator = Validator::make($input, [
-            'title' => 'required',
-            'description' => 'required'
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
 
         $project = Project::create($input);
 
@@ -49,7 +45,7 @@ class ProjectController extends BaseController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function show($id)
     {
@@ -65,22 +61,13 @@ class ProjectController extends BaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateProjectRequest $request
+     * @param Project $project
+     * @return JsonResponse
      */
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
         $input = $request->all();
-
-        $validator = Validator::make($input, [
-            'title' => 'required',
-            'description' => 'required'
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
 
         $project->title = $input['title'];
         $project->description = $input['description'];
@@ -92,8 +79,8 @@ class ProjectController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @return JsonResponse
      */
     public function destroy(Project $project)
     {
