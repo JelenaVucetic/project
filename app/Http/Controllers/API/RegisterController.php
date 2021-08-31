@@ -53,10 +53,14 @@ class RegisterController extends BaseController
         ]);
     }
 
+    public function profile(Request $request)
+    {
+        return $request->user();
+    }
+
     public function logout(Request $request)
     {
-        return 'dsada';
-       /* auth()->user()->tokens()->delete();
-        return response()->json(['message' => 'User successfully signed out']);*/
+        auth()->user()->tokens()->delete();
+        return response()->json(['message' => 'User successfully signed out']);
     }
 }
