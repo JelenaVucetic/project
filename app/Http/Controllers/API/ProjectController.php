@@ -67,6 +67,7 @@ class ProjectController extends BaseController
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
+        
         $input = $request->all();
 
         $project->title = $input['title'];
