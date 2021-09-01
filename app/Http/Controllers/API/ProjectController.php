@@ -21,6 +21,7 @@ class ProjectController extends BaseController
      */
     public function index()
     {
+        $this->authorize('project_access');
         $projects = Project::all();
 
         return $this->sendResponse(ProjectResource::collection($projects), 'Projects retrieved successfully.');
@@ -47,10 +48,8 @@ class ProjectController extends BaseController
      * @param  int  $id
      * @return JsonResponse
      */
-    public function show($id)
+    public function show(Project $project)
     {
-        $project = Project::find($id);
-
         if (is_null($project)) {
             return $this->sendError('Project not found.');
         }
@@ -67,7 +66,6 @@ class ProjectController extends BaseController
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        
         $input = $request->all();
 
         $project->title = $input['title'];

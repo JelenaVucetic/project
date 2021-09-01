@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class RegisterController extends BaseController
 {
@@ -23,31 +23,38 @@ class RegisterController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
+        $user = User::create(array_merge($request->all(), [
+            "password" => bcrypt($request->password)
+        ]));
 
-        $user = User::create($input);
+        $role = Role::where('name', 'developer')->first();
+        User::where('id',$user->id)->first()->assignRole($role);
 
-        $success['token'] =  $user->createToken('MyAppToken')->plainTextToken;
-        $success['name'] =  $user->name;
+
+        $success = [
+            'token' => $user->createToken('MyAppToken')->plainTextToken,
+            'name' => $user->name
+        ];
 
         return $this->sendResponse($success, 'User register successfully.');
     }
 
     public function login(Request $request)
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-            $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-            $success['name'] =  $user->name;
+        if(auth()->attempt(['email' => $request->email, 'password' => $request->password])){
+            $user = auth()->user();
 
+            $success = [
+                'token' => $user->createToken('MyApp')->plainTextToken,
+                'name' => $user->name
+            ];
             return $this->sendResponse($success, 'User login successfully.');
         }
         else{
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         }
     }
-    
+
     public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();

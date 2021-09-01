@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
-use App\Http\Resources\UserCollection;
 
-class UsersController extends Controller
+
+class UsersController extends BaseController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return UserCollection
+     * @return
      */
     public function index()
     {

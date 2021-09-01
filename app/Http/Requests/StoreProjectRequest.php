@@ -28,11 +28,4 @@ class StoreProjectRequest extends FormRequest
             'description' => 'required'
         ];
     }
-    public function messages()
-    {
-        return [
-            'title.required' => 'Title is required!',
-            'description.required' => 'Description is required!',
-        ];
-    }
 }

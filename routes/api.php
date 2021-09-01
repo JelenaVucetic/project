@@ -21,8 +21,6 @@ use App\Http\Controllers\API\ProjectController;
 Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
 
-
-
 //Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [RegisterController::class, 'logout']);

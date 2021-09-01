@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -42,7 +43,14 @@ class Handler extends ExceptionHandler
                     'error' => 'Resource not found'
                 ], 404);
             }
+        });
 
+        $this->renderable(function (AccessDeniedHttpException $e, $request) {
+            if($request->wantsJson()) {
+                return response()->json([
+                    'error' => 'Unauthorized'
+                ], 403);
+            }
         });
     }
 
